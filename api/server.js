@@ -3,7 +3,8 @@ const cors = require('cors');
 const app = express();
 const pg = require('pg');
 const env =require('dotenv')
-// Database connectio
+const jwt=require('jsonwebtoken')
+// Database connection
 env.config();
 const db = new pg.Client({
     user: process.env.PG_USER,
@@ -13,10 +14,11 @@ const db = new pg.Client({
     port: process.env.PG_PORT,
 });
 db.connect();
-
+const jwtsecret='hbhjewvbchvwucvwbbxuw'
 
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: 'http://localhost:5173', // Your React app’s URL
+    credentials: true, // Allows cookies to be sent
 }));
 app.use(express.json());
 
@@ -41,6 +43,32 @@ app.post('/register', (req, res) => {
         }
     );
 });
+//Login route
+app.post('/login', async (req,res)=>{
+    const {email,password}=req.body;
+    const result=await db.query("SELECT * FROM users where email=$1",[email]);
+    // console.log(result.rows[0].password);
+    if(result.rows.length){
+        if(password==result.rows[0].password){
+            jwt.sign({email:result.rows[0].email,id:result.rows[0].userid},jwtsecret,{},(err,token)=>{
+                if(err){
+                    throw err;
+                }
+                else{
+                    console.log(token);
+                    res.cookie('token',token,{
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        sameSite: 'lax',
+                    }).json('ok');
+                }
+            })
+        }
+        else{
+            res.json("not ok");
+        }
+    }
+})
 
 app.listen(4000, () => {
     console.log("Server running on port 4000");
