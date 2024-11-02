@@ -8,7 +8,11 @@ function Register() {
   const [password,setPassword] = useState('');
   function registerUser(ev) {
     ev.preventDefault();
-      axios.get('http://localhost:4000');
+      axios.post('http://localhost:4000/register',{
+        name,
+        email,
+        password
+      });
 
   }
 
@@ -30,13 +34,13 @@ function Register() {
         type="email" 
         placeholder='email address'
         value={email}
-        onChange={ev=>setEmail(ev.target.email)}
+        onChange={ev=>setEmail(ev.target.value)}
        />
       <input 
         type="password" 
         placeholder='password'
         value={password}
-        onChange={ev=>setPassword(ev.target.password)}
+        onChange={ev=>setPassword(ev.target.value)}
         />
       <button className='login'>submit</button>
       <div className='text-center py-2 text-gray-500'>
