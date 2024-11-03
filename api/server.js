@@ -60,7 +60,7 @@ app.post('/login', async (req,res)=>{
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
                         sameSite: 'lax',
-                    }).json('ok');
+                    }).json(result.rows[0]);
                 }
             })
         }

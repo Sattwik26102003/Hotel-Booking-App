@@ -2,16 +2,36 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
+import { Navigate } from 'react-router-dom'
+import { useSelector,useDispatch } from 'react-redux'
+import {login} from '../../authSlice'
 function Login() {
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
-  function loginUser(ev){
+  const [redirect,setRedirect]=useState(false);
+  const dispatch =useDispatch();
+  async function loginUser(ev){
     ev.preventDefault();
-    const res=axios.post('http://localhost:4000/login',{
-      email,
-      password
-    },{withCredentials:true});
+    try{
+      const userInfo = await axios.post('http://localhost:4000/login',{
+        email,
+        password
+      },{withCredentials:true});
+      alert("login successful");
+      console.log();
+      dispatch(login(userInfo.data.name));
+      setRedirect(true);
+    }
+    catch(err){
+      alert("login fail");
+    }
+    
   }
+
+  if(redirect){
+    return <Navigate to={'/'}/>
+  }
+
   return (
     <>
     <div className='grow flex items-center justify-around'>

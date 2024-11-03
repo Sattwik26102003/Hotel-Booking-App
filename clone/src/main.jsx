@@ -7,7 +7,8 @@ import Layout from './Layout.jsx'
 import Home from './components/home/Home.jsx'
 import Login from './components/login/Login.jsx'
 import Register from './components/register/Register.jsx'
-
+import {Provider} from 'react-redux'
+import {store} from './app/store.js'
 const router=createBrowserRouter([
   {
     path:'/',
@@ -31,5 +32,7 @@ const router=createBrowserRouter([
   }
 ])
 createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
     <RouterProvider router={router}/>
+    </Provider>
 )
