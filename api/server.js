@@ -4,6 +4,26 @@ const app = express();
 const pg = require('pg');
 const env =require('dotenv')
 const jwt=require('jsonwebtoken')
+const cookieParser= require('cookie-parser')
+
+app.use(cookieParser())
+
+//user-authentication middleware
+const auth=(req,res,next)=>{
+    try {
+        const token=req.cookies.token;
+        if(!token){
+            res.status(401).json({message:'no login brotha'})
+        }
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId=decoded.id;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token' });
+    }
+}
+
+
 // Database connection
 env.config();
 const db = new pg.Client({
@@ -44,30 +64,41 @@ app.post('/register', (req, res) => {
     );
 });
 //Login route
-app.post('/login', async (req,res)=>{
-    const {email,password}=req.body;
-    const result=await db.query("SELECT * FROM users where email=$1",[email]);
-    // console.log(result.rows[0].password);
-    if(result.rows.length){
-        if(password==result.rows[0].password){
-            jwt.sign({email:result.rows[0].email,id:result.rows[0].userid},jwtsecret,{},(err,token)=>{
-                if(err){
-                    throw err;
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const result = await db.query("SELECT * FROM users where email=$1", [email]);
+
+    if (result.rows.length) {
+        if (password == result.rows[0].password) {
+            jwt.sign(
+                { email: result.rows[0].email, id: result.rows[0].userid },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }, // Set token expiration to 1 hour
+                (err, token) => {
+                    if (err) {
+                        throw err;
+                    } else {
+                        res.cookie('token', token, {
+                            httpOnly: true,
+                            secure: process.env.NODE_ENV === 'production',
+                            sameSite: 'lax',
+                            maxAge: 3600000, // 1 hour in milliseconds
+                        }).json(result.rows[0]);
+                    }
                 }
-                else{
-                    console.log(token);
-                    res.cookie('token',token,{
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production',
-                        sameSite: 'lax',
-                    }).json(result.rows[0]);
-                }
-            })
-        }
-        else{
+            );
+        } else {
             res.json("not ok");
         }
+    } else {
+        res.status(404).json('not found');
     }
+});
+
+
+app.get('/profile',auth,async (req,res)=>{
+    const result =await db.query('SELECT * FROM users where userid=$1',[req.userId]);
+    res.json(result.rows[0]);
 })
 
 app.listen(4000, () => {

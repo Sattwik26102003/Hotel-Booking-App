@@ -5,6 +5,7 @@ import axios from 'axios'
 import { Navigate } from 'react-router-dom'
 import { useSelector,useDispatch } from 'react-redux'
 import {login} from '../../authSlice'
+import Cookies from 'js-cookie'
 function Login() {
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
@@ -18,7 +19,7 @@ function Login() {
         password
       },{withCredentials:true});
       alert("login successful");
-      console.log();
+      console.log(userInfo);
       dispatch(login(userInfo.data.name));
       setRedirect(true);
     }
