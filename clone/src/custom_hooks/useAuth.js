@@ -12,7 +12,7 @@ const useAuthCheck = ()=>{
                 const response= await axios.get('http://localhost:4000/profile',{
                     withCredentials:true
                 })
-                dispatch(login(response.data.name))
+                dispatch(login(response.data))
             } catch (error) {
                 console.log(error);
             } 

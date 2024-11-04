@@ -20,7 +20,7 @@ function Login() {
       },{withCredentials:true});
       alert("login successful");
       console.log(userInfo);
-      dispatch(login(userInfo.data.name));
+      dispatch(login(userInfo.data));
       setRedirect(true);
     }
     catch(err){
