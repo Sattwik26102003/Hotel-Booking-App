@@ -101,6 +101,16 @@ app.get('/profile',auth,async (req,res)=>{
     res.json(result.rows[0]);
 })
 
+app.post('/logout', (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(0), // Immediately expires the cookie
+    }).status(200).json({ message: 'Logged out successfully' });
+});
+
 app.listen(4000, () => {
     console.log("Server running on port 4000");
 });
+

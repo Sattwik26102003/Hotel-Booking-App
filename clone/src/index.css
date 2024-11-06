@@ -9,3 +9,8 @@ button.login{
     background-color: '#FF385C';
     @apply bg-primary p-2 w-full rounded-2xl text-white;
 }
+
+button.primary{
+    background-color: #F5385D;
+    @apply bg-primary p-2 w-full text-white rounded-2xl;
+}

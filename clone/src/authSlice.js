@@ -15,10 +15,10 @@ export const authSlice= createSlice({
         login: (state,action)=>{
             state.isAuthenticated=true,
             state.user.name=action.payload.name
-            state.user.email=action.payload.name
+            state.user.email=action.payload.email
         },
         logout:(state)=>{
-            state.isAuthenticated=true,
+            state.isAuthenticated=false,
             state.user.name='',
             state.user.email=''
         }
