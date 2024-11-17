@@ -49,7 +49,13 @@ const router = createBrowserRouter([
           },
           {
             path: 'accomodation',
-            element: <Accomodation/>
+            element: <Accomodation/>,
+            children:[
+              {
+                path:'new',
+                element: <Accomodation/>
+              }
+            ]
           }
         ]
       }
