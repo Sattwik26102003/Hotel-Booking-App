@@ -69,6 +69,9 @@ app.post('/login', async (req, res) => {
     const result = await db.query("SELECT * FROM users where email=$1", [email]);
 
     if (result.rows.length) {
+        console.log(password);
+        console.log(result.rows[0].password);
+        
         if (password == result.rows[0].password) {
             jwt.sign(
                 { email: result.rows[0].email, id: result.rows[0].userid },
@@ -88,7 +91,7 @@ app.post('/login', async (req, res) => {
                 }
             );
         } else {
-            res.json("not ok");
+            res.status(404).json("not ok");
         }
     } else {
         res.status(404).json('not found');

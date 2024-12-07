@@ -21,9 +21,28 @@ function Accomodation() {
         </div>
       );
     } else {
+      function inputHeader(text) {
+        return (
+          <h2 className="text-2xl mt-4">{text}</h2>
+        );
+      }
+      function inputDescription(text) {
+        return (
+          <p className="text-gray-500 text-sm">{text}</p>
+        );
+      }
+      function preInput(header,description) {
+        return (
+          <>
+            {inputHeader(header)}
+            {inputDescription(description)}
+          </>
+        );
+      }
       return (
         <div className="container mx-auto px-4"> {/* Centered and constrained width */}
-          <h2 className='text-2xl mt-4'>Title</h2>
+        <form action="">
+        <h2 className='text-2xl mt-4'>Title</h2>
           <p>Title for your place, should be short and catchy as per advertisement</p>
           <input type="text" placeholder='title, for example, my lovely apartment' className="w-full border rounded p-2" />
           <h2 className='text-2xl mt-4'>Address</h2>
@@ -92,7 +111,23 @@ function Accomodation() {
             <p className='text-gray-500 text-sm'>house rules, etc</p>
             <textarea />
             <h2 className='text-2xl mt-4'>Check in & Check out</h2>
-            <p className='text-gray-500 text-sm'>add check in and out </p>
+            <p className='text-gray-500 text-sm'>add check in and out; Remember to have some time window between guests </p>
+            <div className='grid sm:grid-cols-3'>
+              <div className='mr-2'>
+                <h3>Check in time</h3>
+                <input type="text" placeholder='14:00' />
+              </div>
+              <div className='mr-2'>
+              <h3>Check out time</h3>
+              <input type="text" placeholder='14:00' />
+              </div>
+              <div>
+                <h3>Max number of guests</h3>
+                <input type="text" />
+              </div>
+            </div>
+        </form>
+          
             
         </div>
       );
