@@ -154,7 +154,23 @@ app.post('/upload-photo-device', auth, upload.single('image'), (req, res) => {
     res.json({ filename: req.file.filename });
 });
 
-
+app.post('/save-place' ,auth,async (req,res)=>{
+    console.log(req.body);
+    const {title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests}=req.body
+    await db.query(
+        'insert into accomodation (title, address, photos,description, perks, extraInfo,checkIn, checkOut, maxGuests,userid) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
+        [title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests,req.userId],
+        (err) => {
+            if (err) {
+                console.error(err);
+                res.status(500).send("Error inserting data");
+            } else {
+                res.status(201).send("Accomodation added successfully");
+                console.log("place added");
+            }
+        }
+    )
+});
 
 app.listen(4000, () => {
     console.log("Server running on port 4000");

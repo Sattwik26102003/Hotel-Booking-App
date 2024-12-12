@@ -93,9 +93,22 @@ function Accomodation() {
         );
       }
 
+      async function savePlace(ev) {
+        console.log("hello");
+        
+        ev.preventDefault();
+        const placeData = {
+          title, address, addedPhotos,
+          description, perks, extraInfo,
+          checkIn, checkOut, maxGuests
+        };
+          // new place
+        await axios.post('http://localhost:4000/save-place', placeData ,{withCredentials:true});
+      }
+
       return (
         <div className="container mx-auto px-4">
-          <form>
+          <form onSubmit={savePlace}>
             {preInput('Title', 'Title for your place, should be short and catchy as per advertisement')}
             <input
               type="text"
@@ -214,7 +227,7 @@ function Accomodation() {
 
             <div className='mt-4'>
               <button
-                type="button"
+                type="submit"
                 className="bg-primary text-white py-2 px-6 rounded-full"
                 onClick={() => {
                   console.log({ title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests });
