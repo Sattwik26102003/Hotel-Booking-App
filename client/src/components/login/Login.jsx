@@ -19,7 +19,7 @@ function Login() {
         password
       },{withCredentials:true});
       alert("login successful");
-      console.log(userInfo);
+      console.log(userInfo.data);
       dispatch(login(userInfo.data));
       setRedirect(true);
     }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import Places from './Places';
 function Accomodation() {
   const location = useLocation();
   const activeSubpage = location.pathname.split('/').length === 4 ? location.pathname.split('/')[3] : 'accomodation';
@@ -60,6 +61,7 @@ function Accomodation() {
     if (activeSubpage === 'accomodation') {
       return (
         <div className="container mx-auto px-4">
+          
           <div className='text-center'>
             <Link to={'/account/accomodation/new'} className='bg-primary text-white py-2 px-6 rounded-full inline-flex'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -68,8 +70,9 @@ function Accomodation() {
               Add new place
             </Link>
           </div>
-          My places
+          <Places/>
         </div>
+        
       );
     } else {
       function inputHeader(text) {

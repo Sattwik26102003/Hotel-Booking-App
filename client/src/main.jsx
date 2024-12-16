@@ -13,55 +13,61 @@ import { store } from './app/store.js'
 import Booking from './components/account/acc_elements/Booking.jsx'
 import Accomodation from './components/account/acc_elements/Accomodation.jsx'
 import Profile from './components/account/acc_elements/Profile.jsx'
+import PlaceDescription from './components/account/acc_elements/PlaceDescription.jsx'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout/>,
+    element: <Layout />,
     children: [
       {
-        path: "",
-        element: <Home/>
+        path: '',
+        element: <Home />
       },
       {
-        path: "login",
-        element: <Login/>
+        path: 'login',
+        element: <Login />
       },
       {
-        path: "register",
-        element: <Register/>
+        path: 'register',
+        element: <Register />
       },
       {
-        path: 'account', 
-        element: <Account/>,
+        path: 'account',
+        element: <Account />,
         children: [
           {
-            path: '',  // default route
-            element: <Profile/>
+            path: '', // default route
+            element: <Profile />
           },
           {
             path: 'profile',
-            element: <Profile/>
+            element: <Profile />
           },
           {
             path: 'booking',
-            element: <Booking/>
+            element: <Booking />
           },
           {
             path: 'accomodation',
-            element: <Accomodation/>,
-            children:[
+            element: <Accomodation />,
+            children: [
               {
-                path:'new',
-                element: <Accomodation/>
+                path: 'new',
+                element: <Accomodation />
               }
             ]
-          }
+          },
         ]
+      },
+      {
+        path: 'place/:userid', // Dynamic route for places with userid
+        element: <PlaceDescription /> // This should be your Places component
       }
     ]
   }
-])
+]);
+
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>

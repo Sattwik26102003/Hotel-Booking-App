@@ -172,6 +172,20 @@ app.post('/save-place' ,auth,async (req,res)=>{
     )
 });
 
+app.get('/places', auth, async (req, res) => {
+    try {
+        const places = await db.query(
+            'SELECT * FROM accomodation WHERE userid=$1',
+            [req.userId]
+        );
+        res.json(places.rows); // Send all rows
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch places' });
+    }
+});
+
+
 app.listen(4000, () => {
     console.log("Server running on port 4000");
 });
