@@ -14,6 +14,7 @@ import Booking from './components/account/acc_elements/Booking.jsx'
 import Accomodation from './components/account/acc_elements/Accomodation.jsx'
 import Profile from './components/account/acc_elements/Profile.jsx'
 import PlaceDescription from './components/account/acc_elements/PlaceDescription.jsx'
+import PlaceForm from './components/account/acc_elements/Placeform.jsx'
 
 const router = createBrowserRouter([
   {
@@ -51,19 +52,21 @@ const router = createBrowserRouter([
           {
             path: 'accomodation',
             element: <Accomodation />,
-            children: [
-              {
-                path: 'new',
-                element: <Accomodation />
-              }
-            ]
           },
+          {
+            path:'accomodation/new',
+            element:<PlaceForm/>
+          },
+          {
+            path:'accomodation/:accomodationId',
+            element:<PlaceForm/>
+          }
         ]
       },
-      {
-        path: 'place/:userid', // Dynamic route for places with userid
-        element: <PlaceDescription /> // This should be your Places component
-      }
+      // {
+      //   path: 'place/:userid', // Dynamic route for places with userid
+      //   element: <PlaceDescription /> // This should be your Places component
+      // }
     ]
   }
 ]);

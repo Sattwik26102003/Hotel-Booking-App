@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const download = require('image-downloader');
 const multer = require('multer');
 const path = require('path');
+const { log } = require('console');
 
 env.config();
 app.use(cookieParser());
@@ -182,6 +183,39 @@ app.get('/places', auth, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to fetch places' });
+    }
+});
+
+
+app.get('/specific-place', auth, async (req, res) => {
+    try {
+        const accomodationid = req.query.accomodationid; // Access query params
+        const places = await db.query(
+            'SELECT * FROM accomodation WHERE userid=$1 AND accomodation_id=$2',
+            [req.userId, accomodationid]
+        );
+        if (places.rows.length > 0) {
+            res.json(places.rows[0]); // Send the single place
+        } else {
+            res.status(404).json({ message: 'Place not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch place' });
+    }
+});
+
+app.put('/update-place', auth, async (req, res) => {
+    const { accomodationId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests } = req.body;
+    try {
+        await db.query(
+            'UPDATE accomodation SET title=$1, address=$2, photos=$3, description=$4, perks=$5, extraInfo=$6, checkIn=$7, checkOut=$8, maxGuests=$9 WHERE userid=$10 AND accomodation_id=$11',
+            [title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, req.userId, accomodationId]
+        );
+        res.json({ message: 'Place updated successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update place' });
     }
 });
 

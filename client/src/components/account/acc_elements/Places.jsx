@@ -26,7 +26,7 @@ function Places() {
         place.map((placeItem) => (
           <Link
             key={uuidv4()} // Generate a unique key for each mapped item
-            to={`/place/${placeItem.accomodation_id}`}
+            to={`${placeItem.accomodation_id}`}
             className="flex gap-4 bg-gray-200 p-4 rounded-2xl"
           >
             <div className="w-32 h-32 bg-gray-300 shrink-0 aspect-square">
