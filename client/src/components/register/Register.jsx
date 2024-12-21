@@ -2,17 +2,23 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 function Register() {
+  const navigate = useNavigate();
   const [name,setName] = useState('');
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
+  const [redirect,setRedirect] = useState(false); // Add redirect state
   function registerUser(ev) {
     ev.preventDefault();
       axios.post('http://localhost:4000/register',{
         name,
         email,
         password
-      });
+      }).then(response=>{
+        console.log(response.data);
+        navigate('/') // Set redirect to true
+      })
 
   }
 

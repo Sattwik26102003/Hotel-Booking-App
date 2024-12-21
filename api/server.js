@@ -61,7 +61,7 @@ const jwtSecret = process.env.JWT_SECRET || 'default_secret';
 // Routes
 app.get('/', (req, res) => {
     res.json('Server is running successfully');
-});
+})
 
 app.post('/register', (req, res) => {
     const { name, email, password } = req.body;
@@ -156,11 +156,13 @@ app.post('/upload-photo-device', auth, upload.single('image'), (req, res) => {
 });
 
 app.post('/save-place' ,auth,async (req,res)=>{
-    console.log(req.body);
-    const {title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests}=req.body
+    console.log(req.body)
+    let {title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests,price}=req.body
+    price=parseInt(price)
+    log(price)
     await db.query(
-        'insert into accomodation (title, address, photos,description, perks, extraInfo,checkIn, checkOut, maxGuests,userid) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
-        [title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests,req.userId],
+        'insert into accomodation (title, address, photos,description, perks, extraInfo,checkIn, checkOut, maxGuests,userid,price) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',
+        [title, address, addedPhotos,description, perks, extraInfo,checkIn, checkOut, maxGuests,req.userId,price],
         (err) => {
             if (err) {
                 console.error(err);
@@ -206,11 +208,12 @@ app.get('/specific-place', auth, async (req, res) => {
 });
 
 app.put('/update-place', auth, async (req, res) => {
-    const { accomodationId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests } = req.body;
+    const { accomodationId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests,price } = req.body;
+    price=parseInt(price);
     try {
         await db.query(
-            'UPDATE accomodation SET title=$1, address=$2, photos=$3, description=$4, perks=$5, extraInfo=$6, checkIn=$7, checkOut=$8, maxGuests=$9 WHERE userid=$10 AND accomodation_id=$11',
-            [title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, req.userId, accomodationId]
+            'UPDATE accomodation SET title=$1, address=$2, photos=$3, description=$4, perks=$5, extraInfo=$6, checkIn=$7, checkOut=$8, maxGuests=$9, price=$11 WHERE userid=$10 AND accomodation_id=$12',
+            [title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests, req.userId,price, accomodationId]
         );
         res.json({ message: 'Place updated successfully' });
     } catch (err) {
@@ -219,8 +222,18 @@ app.put('/update-place', auth, async (req, res) => {
     }
 });
 
+app.get('/get-all-places', async (req, res) => {
+    try {
+        const places = await db.query('SELECT * FROM accomodation');
+        res.json(places.rows)
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch places' });
+    }
+});
+
 
 app.listen(4000, () => {
     console.log("Server running on port 4000");
-});
+})
 

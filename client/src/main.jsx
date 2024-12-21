@@ -13,7 +13,6 @@ import { store } from './app/store.js'
 import Booking from './components/account/acc_elements/Booking.jsx'
 import Accomodation from './components/account/acc_elements/Accomodation.jsx'
 import Profile from './components/account/acc_elements/Profile.jsx'
-import PlaceDescription from './components/account/acc_elements/PlaceDescription.jsx'
 import PlaceForm from './components/account/acc_elements/Placeform.jsx'
 
 const router = createBrowserRouter([

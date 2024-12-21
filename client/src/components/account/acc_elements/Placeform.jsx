@@ -15,6 +15,7 @@ function PlaceForm({ onSave }) {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [maxGuests, setMaxGuests] = useState(1);
+  const [price, setPrice] = useState();
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ function PlaceForm({ onSave }) {
             `http://localhost:4000/specific-place?accomodationid=${accomodationId}`,
             { withCredentials: true }
           );
+          console.log(response.data);
           const data = response.data;
           setTitle(data.title);
           setAddress(data.address);
@@ -38,9 +40,10 @@ function PlaceForm({ onSave }) {
           setDescription(data.description);
           setPerks(data.perks);
           setExtraInfo(data.extraInfo);
-          setCheckIn(data.checkIn);
-          setCheckOut(data.checkOut);
+          setCheckIn(data.checkin);
+          setCheckOut(data.checkout);
           setMaxGuests(data.maxGuests);
+          setPrice(data.price);
         } catch (error) {
           console.error('Error fetching accomodation details:', error);
         }
@@ -104,6 +107,7 @@ function PlaceForm({ onSave }) {
       checkIn,
       checkOut,
       maxGuests,
+      price,
     };
     if (accomodationId) {
       onEdit(placeData);
@@ -113,6 +117,8 @@ function PlaceForm({ onSave }) {
   }
 
   async function onEdit(placeData) {
+    console.log('hell yeah');
+    
     await axios.put(
       'http://localhost:4000/update-place',
       { accomodationId, ...placeData },
@@ -236,37 +242,52 @@ function PlaceForm({ onSave }) {
 
       {preInput('Check in & Check out', 'Add check in and out; Remember to have some time window between guests')}
       <div className="grid sm:grid-cols-3 gap-4">
-        <div>
-          <h3>Check in time</h3>
-          <input
-            type="text"
-            value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
-            placeholder="14:00"
-            className="w-full border rounded p-2"
-          />
-        </div>
-        <div>
-          <h3>Check out time</h3>
-          <input
-            type="text"
-            value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
-            placeholder="11:00"
-            className="w-full border rounded p-2"
-          />
-        </div>
-        <div>
-          <h3>Max number of guests</h3>
-          <input
-            type="number"
-            value={maxGuests}
-            onChange={(e) => setMaxGuests(e.target.value)}
-            min="1"
-            className="w-full border rounded p-2"
-          />
-        </div>
-      </div>
+  <div>
+    <h3>Check in time</h3>
+    <input
+      type="text"
+      value={checkIn}
+      onChange={(e) => setCheckIn(e.target.value)}
+      placeholder="14:00"
+      className="w-full border rounded p-2 appearance-none"
+    />
+  </div>
+  <div>
+    <h3>Check out time</h3>
+    <input
+      type="text"
+      value={checkOut}
+      onChange={(e) => setCheckOut(e.target.value)}
+      placeholder="11:00"
+      className="w-full border rounded p-2 appearance-none"
+    />
+  </div>
+  <div>
+    <h3>Max number of guests</h3>
+    <input
+      type="number"
+      value={maxGuests}
+      onChange={(e) => setMaxGuests(e.target.value)}
+      min="1"
+      step="1"
+      placeholder="1"
+      className="w-full border rounded-2xl mt-2 p-2 appearance-none"
+    />
+  </div>
+  <div>
+    <h3>Price per night</h3>
+    <input
+      type="number"
+      value={price}
+      onChange={(e) => setPrice(e.target.value)}
+      min="1"
+      step="1"
+      placeholder="1"
+      className="w-full border rounded-2xl mt-2 p-2 appearance-none"
+    />
+    </div>
+  </div>
+
 
       <div className="mt-4">
         <button type="submit" className="bg-primary text-white py-2 px-6 rounded-full">
