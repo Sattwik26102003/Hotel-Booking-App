@@ -5,7 +5,7 @@ function Header() {
   const {isAuthenticated,user}=useSelector(state=> state.auth)
   return (
     <>
-    <header className='m-1 flex justify-between'>
+    <header className='m-1 flex justify-between flex-col md:flex-row '>
       <Link to={'/'}>
     <a href="" className='logo flex py-2'>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 -rotate-45">

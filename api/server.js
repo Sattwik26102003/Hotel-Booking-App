@@ -208,7 +208,7 @@ app.get('/specific-place', auth, async (req, res) => {
 });
 
 app.put('/update-place', auth, async (req, res) => {
-    const { accomodationId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests,price } = req.body;
+    let { accomodationId, title, address, addedPhotos, description, perks, extraInfo, checkIn, checkOut, maxGuests,price } = req.body;
     price=parseInt(price);
     try {
         await db.query(
@@ -231,6 +231,67 @@ app.get('/get-all-places', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch places' });
     }
 });
+
+app.get('/place/:id', async (req, res) => {
+    try {
+        const place = await db.query('SELECT * FROM accomodation WHERE accomodation_id=$1', [req.params.id]);
+        if (place.rows.length > 0) {
+            res.json(place.rows[0]);
+        } else {
+            res.status(404).json({ message: 'Place not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch place' });
+    }
+});
+
+// POST route for booking
+app.post('/booking', auth, async (req, res) => {
+    let { userid, placeid, checkin, checkout,guests, name, phone, days } = req.body;
+    guests=parseInt(guests);
+    placeid=parseInt(placeid);
+    days=parseInt(days);
+    try {
+        await db.query(
+            'INSERT INTO bookings (userid, placeid, checkin, checkout, guest, name, phone, days) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+            [userid, placeid, checkin, checkout, guests, name, phone, days]
+        );
+        res.json({ message: 'Booking successful' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to book place' })
+    }
+});
+
+app.get('/booking', auth, async (req, res) => {
+    try {
+        const bookings = await db.query('SELECT * FROM bookings WHERE userid=$1', [req.userId]);
+        const bookingRows = bookings.rows;
+
+        // Fetch additional data for each booking
+        const enrichedBookings = await Promise.all(
+            bookingRows.map(async (booking) => {
+                const place = await db.query('SELECT  title, address, photos,price FROM accomodation WHERE accomodation_id=$1', [booking.placeid]);
+                if (place.rows.length > 0) {
+                    console.log(booking.booking_id);
+                    
+                    booking.title = place.rows[0].title;
+                    booking.address = place.rows[0].address;
+                    booking.photos = place.rows[0].photos;
+                    booking.price= place.rows[0].price*booking.days
+                }
+                return booking;
+            })
+        );
+
+        res.json(enrichedBookings);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to fetch bookings' });
+    }
+});
+
 
 
 app.listen(4000, () => {
